@@ -20,6 +20,7 @@ from context_list_wrapper import ContextList
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+DEV_USER = os.getenv('DISCORD_USER_ID')
 ACTIVE = True
 
 print("Agents loaded: {0}".format(list(Agents.Environment.AGENT_LIST.keys())))
@@ -40,7 +41,7 @@ async def on_ready():
 
 @bot.command(name="execute")
 async def execute(context):
-    if type(context) != ContextList and context.author.id != 297571652001071105:
+    if type(context) != ContextList and context.author.id != DEV_USER:
         await context.send("Sorry, you are not the developer.")
         return
     for profile in profile_loader.profile_list:
@@ -162,7 +163,7 @@ def it_is_market_open():
 @bot.command(name="killloop")
 async def killloop(context):
     global ACTIVE
-    if context.author.id != 297571652001071105:
+    if context.author.id != DEV_USER:
         await context.send("Sorry, you are not the developer.")
         return
     ACTIVE = False
