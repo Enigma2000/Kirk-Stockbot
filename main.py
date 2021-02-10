@@ -97,15 +97,15 @@ async def setchannel(context):
 def portfolio_embed(trader):
     neg_color = discord.Colour(0xD0021B)
     pos_color = discord.Colour(0x7ED321)
-    percent_diff_total = float(trader.equity) / float(trader.initial) if trader.initial else 0
-    percent_diff_last = float(trader.equity) / float(trader.last_equity) if trader.last_equity else 0
+    percent_diff_total = (float(trader.equity) / float(trader.initial)) if float(trader.initial)!=0 else 0
+    percent_diff_last = (float(trader.equity) / float(trader.last_equity)) if float(trader.last_equity)!=0 else 0
     if (percent_diff_last<1):
         color = neg_color
     else:
         color = pos_color
     timestamp = datetime.datetime.utcnow()
     positions = trader.get_positions()
-    positions_str = '\n'.join(["{0} x {1}".format(symbol, count) for symbol, count in positions])
+    positions_str = '\n'.join(["{0} x {1} [{2}%]".format(symbol, count, round(float(pchange)*100,2)) for symbol, count, pchange in positions])
     if len(positions) == 0: positions_str = "NONE"
 
     agent_name = trader._profile_info["AGENT"]

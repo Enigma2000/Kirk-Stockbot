@@ -69,5 +69,5 @@ class PaperTrader:
         headers = {"APCA-API-KEY-ID": self.key, "APCA-API-SECRET-KEY": self.secret}
         api_url = "{0}://{1}/v2/positions".format(SCHEMA, ENDPOINT_PAPER)
         r = requests.get(api_url, headers=headers)
-        positions = [(position["symbol"], position["qty"]) for position in r.json()]
+        positions = [(position["symbol"], position["qty"], position["unrealized_plpc"]) for position in r.json()]
         return positions
