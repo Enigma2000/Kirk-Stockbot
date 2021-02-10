@@ -97,8 +97,8 @@ async def setchannel(context):
 def portfolio_embed(trader):
     neg_color = discord.Colour(0xD0021B)
     pos_color = discord.Colour(0x7ED321)
-    percent_diff_total = float(trader.equity) / float(trader.initial)
-    percent_diff_last = float(trader.equity) / float(trader.last_equity)
+    percent_diff_total = float(trader.equity) / float(trader.initial) if trader.initial else 0
+    percent_diff_last = float(trader.equity) / float(trader.last_equity) if trader.last_equity else 0
     if (percent_diff_last<1):
         color = neg_color
     else:
