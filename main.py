@@ -47,7 +47,7 @@ async def execute(context):
             print("Executing profile {0}".format(profile.NAME))
             trader = alpaca_markets.PaperTrader(profile.get_info_dict())
             tickers = Parsers.Environment.PARSER_LIST[profile.PARSER](profile.get_info_dict())
-            orders = Agents.Environment.AGENT_LIST[profile.AGENT](tickers, trader.get_positions(), trader.buying_power/4., profile.get_info_dict())
+            orders = Agents.Environment.AGENT_LIST[profile.AGENT](tickers, trader.get_positions(), float(trader.buying_power)/4., profile.get_info_dict())
 
             buying = '\n'.join(["{0} x {1}".format(symbol, count) for symbol, count in orders["buy"]])
             if len(orders["buy"]) == 0: buying = "NONE"
