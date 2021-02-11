@@ -62,7 +62,7 @@ async def execute(context):
             orders_embed.add_field(name="*__BUYING__*", value=buying, inline=True)
             orders_embed.add_field(name="*__SELLING__*", value=selling, inline=True)
             orders_embed.add_field(name="​", value="​")
-            orders_embed.add_field(name="Buying Power Considered:", value=f"${trader.buying_power/4.}")
+            orders_embed.add_field(name="Buying Power Considered:", value=f"${float(trader.buying_power)/4.}")
 
             await context.send(f"Here is my current portfolio for profile {profile.NAME}:", embed=portfolio_embed(trader))
             await context.send(f"Here are my decisions for profile {profile.NAME} today:", embed=orders_embed)
