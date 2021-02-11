@@ -16,11 +16,9 @@ from context_list_wrapper import ContextList
 
 
 
-# TODO: Host on Raspberry Pi
-
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-DEV_USER = os.getenv('DISCORD_USER_ID')
+DEV_USER = int(os.getenv('DISCORD_USER_ID'))
 ACTIVE = True
 
 print("Agents loaded: {0}".format(list(Agents.Environment.AGENT_LIST.keys())))
