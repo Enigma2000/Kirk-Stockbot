@@ -4,6 +4,7 @@ from Parsers.ParserException import ParserException
 import Parsers.financialmodelingprep_topgainers
 import Agents.Environment
 import Agents.week_hold
+import Agents.daily_match
 import profile_loader
 import alpaca_markets
 import os
@@ -144,8 +145,6 @@ async def check_time():
         elif not it_is_market_open() and has_executed:
             print("resetting")
             has_executed = False
-        else:
-            print("n/a")
         await asyncio.sleep(120)
     print("killing loop")
     return

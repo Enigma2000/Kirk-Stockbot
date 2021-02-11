@@ -1,4 +1,4 @@
-NAME=Basic Test Profile
+NAME=Week Gainer Holder
 PARSER=financialmodelingprep_topgainers
 AGENT=week_holder
 PARSER_API_KEY=dda3835241e57172865e1de5e96ebdd1
