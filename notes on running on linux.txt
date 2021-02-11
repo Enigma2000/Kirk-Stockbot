@@ -1,0 +1,6 @@
+source bin/activate
+nohup python main.py
+
+
+===
+runs even after logoff

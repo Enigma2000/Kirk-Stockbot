@@ -49,7 +49,7 @@ async def execute(context):
             print("Executing profile {0}".format(profile.NAME))
             trader = alpaca_markets.PaperTrader(profile.get_info_dict())
             tickers = Parsers.Environment.PARSER_LIST[profile.PARSER](profile.get_info_dict())
-            orders = Agents.Environment.AGENT_LIST[profile.AGENT](tickers, trader.get_positions(), trader.cash, profile.get_info_dict())
+            orders = Agents.Environment.AGENT_LIST[profile.AGENT](tickers, trader.get_positions(), trader.buying_power/4., profile.get_info_dict())
 
             buying = '\n'.join(["{0} x {1}".format(symbol, count) for symbol, count in orders["buy"]])
             if len(orders["buy"]) == 0: buying = "NONE"
@@ -64,7 +64,7 @@ async def execute(context):
             orders_embed.add_field(name="*__BUYING__*", value=buying, inline=True)
             orders_embed.add_field(name="*__SELLING__*", value=selling, inline=True)
             orders_embed.add_field(name="​", value="​")
-            orders_embed.add_field(name="Cash:", value=f"${trader.cash}")
+            orders_embed.add_field(name="Buying Power Considered:", value=f"${trader.buying_power/4.}")
 
             await context.send(f"Here is my current portfolio for profile {profile.NAME}:", embed=portfolio_embed(trader))
             await context.send(f"Here are my decisions for profile {profile.NAME} today:", embed=orders_embed)
@@ -121,7 +121,7 @@ def portfolio_embed(trader):
     portfolio_embed.add_field(name="Equity:", value=f"${trader.equity}")
     portfolio_embed.add_field(name="Parser:", value=f"{parser_name}", inline=True)
     portfolio_embed.add_field(name="​", value="​", inline=False)
-    portfolio_embed.add_field(name="Cash:", value=f"${trader.cash}")
+    portfolio_embed.add_field(name="BP:", value=f"${trader.buying_power}")
     portfolio_embed.add_field(name="Agent:", value=f"{agent_name}", inline=True)
     portfolio_embed.add_field(name="​", value="​", inline=False)
     portfolio_embed.add_field(name="Percent (To Date)", value=f"{round((percent_diff_total-1)*100,2)}%", inline=True)
@@ -160,12 +160,14 @@ def it_is_market_open():
         return True
     return False
 
-@bot.command(name="killloop")
-async def killloop(context):
+@bot.command(name="stop")
+async def stop(context):
     global ACTIVE
     if context.author.id != DEV_USER:
         await context.send("Sorry, you are not the developer.")
         return
     ACTIVE = False
+    await context.send("Shutting down...")
+    exit(0)
 
 bot.run(TOKEN)
