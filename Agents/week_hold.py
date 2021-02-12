@@ -29,7 +29,7 @@ def get_orders(new_tickers, existing_tickers, limit, profile_info):
         prices = update_prices(new_tickers, profile_info)
 
         # Step 1: Clear our old tickers that are not desired anymore
-        for ticker, count in existing_tickers:
+        for ticker, count, percent_change in existing_tickers:
             if ticker not in new_tickers:
                 orders["sell"].append((ticker, count))
 
@@ -47,7 +47,7 @@ def get_orders(new_tickers, existing_tickers, limit, profile_info):
             prices = update_prices(new_tickers, profile_info)
 
             # Step 1: Clear our old tickers that are not desired anymore
-            for ticker, count in existing_tickers:
+            for ticker, count, percent_change in existing_tickers:
                 if ticker not in new_tickers:
                     orders["sell"].append((ticker, count))
 
