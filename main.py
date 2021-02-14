@@ -167,4 +167,10 @@ async def stop(context):
     await context.send("Shutting down...")
     exit(0)
 
+@bot.event
+async def on_message(message):
+    await bot.process_commands(message)
+    if bot.user.mentioned_in(message):
+        await message.channel.send("Stonks only go up!")
+
 bot.run(TOKEN)
