@@ -43,32 +43,31 @@ async def execute(context):
     if type(context) != ContextList and context.author.id != DEV_USER:
         await context.send("Sorry, you are not the developer.")
         return
-    async with context.channel.typing():
-        for profile in profile_loader.profile_list:
-            if profile.PARSER in Parsers.Environment.PARSER_LIST and profile.AGENT in Agents.Environment.AGENT_LIST:
-                print("Executing profile {0}".format(profile.NAME))
-                trader = alpaca_markets.PaperTrader(profile.get_info_dict())
-                tickers = Parsers.Environment.PARSER_LIST[profile.PARSER](profile.get_info_dict())
-                orders = Agents.Environment.AGENT_LIST[profile.AGENT](tickers, trader.get_positions(), float(trader.buying_power)/4., profile.get_info_dict())
+    for profile in profile_loader.profile_list:
+        if profile.PARSER in Parsers.Environment.PARSER_LIST and profile.AGENT in Agents.Environment.AGENT_LIST:
+            print("Executing profile {0}".format(profile.NAME))
+            trader = alpaca_markets.PaperTrader(profile.get_info_dict())
+            tickers = Parsers.Environment.PARSER_LIST[profile.PARSER](profile.get_info_dict())
+            orders = Agents.Environment.AGENT_LIST[profile.AGENT](tickers, trader.get_positions(), float(trader.buying_power)/4., profile.get_info_dict())
 
-                buying = '\n'.join(["{0} x {1}".format(symbol, count) for symbol, count in orders["buy"]])
-                if len(orders["buy"]) == 0: buying = "NONE"
+            buying = '\n'.join(["{0} x {1}".format(symbol, count) for symbol, count in orders["buy"]])
+            if len(orders["buy"]) == 0: buying = "NONE"
 
-                selling = '\n'.join(["{0} x {1}".format(symbol, count) for symbol, count in orders["sell"]])
-                if len(orders["sell"]) == 0: selling = "NONE"
+            selling = '\n'.join(["{0} x {1}".format(symbol, count) for symbol, count in orders["sell"]])
+            if len(orders["sell"]) == 0: selling = "NONE"
 
-                orders_embed = discord.Embed(title="__Orders__", colour=discord.Colour(0xF5A623),
-                                      timestamp=datetime.datetime.utcnow())
+            orders_embed = discord.Embed(title="__Orders__", colour=discord.Colour(0xF5A623),
+                                  timestamp=datetime.datetime.utcnow())
 
-                orders_embed.set_footer(text="I am not a financial advisor. I just like these stocks.")
-                orders_embed.add_field(name="*__BUYING__*", value=buying, inline=True)
-                orders_embed.add_field(name="*__SELLING__*", value=selling, inline=True)
-                orders_embed.add_field(name="​", value="​")
-                orders_embed.add_field(name="Buying Power Considered:", value=f"${float(trader.buying_power)/4.}")
+            orders_embed.set_footer(text="I am not a financial advisor. I just like these stocks.")
+            orders_embed.add_field(name="*__BUYING__*", value=buying, inline=True)
+            orders_embed.add_field(name="*__SELLING__*", value=selling, inline=True)
+            orders_embed.add_field(name="​", value="​")
+            orders_embed.add_field(name="Buying Power Considered:", value=f"${float(trader.buying_power)/4.}")
 
-                await context.send(f"Here is my current portfolio for profile {profile.NAME}:", embed=portfolio_embed(trader))
-                await context.send(f"Here are my decisions for profile {profile.NAME} today:", embed=orders_embed)
-                trader.execute_orders(orders)
+            await context.send(f"Here is my current portfolio for profile {profile.NAME}:", embed=portfolio_embed(trader))
+            await context.send(f"Here are my decisions for profile {profile.NAME} today:", embed=orders_embed)
+            trader.execute_orders(orders)
 
 
 @bot.command(name="ping")
@@ -83,11 +82,12 @@ async def invite(context):
 
 @bot.command(name="portfolio")
 async def publish_portfolios(context):
-    for profile in profile_loader.profile_list:
-        if profile.PARSER in Parsers.Environment.PARSER_LIST and profile.AGENT in Agents.Environment.AGENT_LIST:
-            trader = alpaca_markets.PaperTrader(profile.get_info_dict())
-            await context.send(f"Here is my current portfolio for profile {profile.NAME}:",
-                               embed=portfolio_embed(trader))
+    async with context.channel.typing():
+        for profile in profile_loader.profile_list:
+            if profile.PARSER in Parsers.Environment.PARSER_LIST and profile.AGENT in Agents.Environment.AGENT_LIST:
+                trader = alpaca_markets.PaperTrader(profile.get_info_dict())
+                await context.send(f"Here is my current portfolio for profile {profile.NAME}:",
+                                   embed=portfolio_embed(trader))
 
 @bot.command(name="setchannel")
 async def setchannel(context):
