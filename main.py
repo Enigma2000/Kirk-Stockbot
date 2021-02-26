@@ -143,6 +143,7 @@ async def check_time():
     while ACTIVE:
         if it_is_market_open() and not has_executed:
             print("executing")
+            context_list.empty()
             for guild in bot.guilds:
                 if guild in channels:
                     context_list.add(channels[guild])
