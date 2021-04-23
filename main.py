@@ -3,6 +3,7 @@ import Parsers.Environment
 from Parsers.ParserException import ParserException
 import Parsers.financialmodelingprep_topgainers
 import Agents.Environment
+import Helpers.chat
 import Agents.week_hold
 import Agents.daily_match
 import profile_loader
@@ -11,6 +12,7 @@ import os
 import datetime
 import discord
 import asyncio
+import random
 from discord.ext import commands
 from dotenv import load_dotenv
 from context_list_wrapper import ContextList
@@ -95,7 +97,7 @@ async def setchannel(context):
     await context.send("Okay, I'll publish my moves here!")
 
 @bot.command(name="silent_setchannel")
-async def setchannel(context):
+async def silent_setchannel(context):
     channels[context.guild] = context.channel
     await context.channel.delete_messages([context.message])
 
@@ -180,10 +182,89 @@ async def broadcast(context):
     await context.channel.delete_messages([context.message])
     await context.send(message)
 
+@bot.command(name="kick")
+async def kick(context):
+    await context.channel.delete_messages([context.message])
+    try:
+        await context.message.mentions[0].kick()
+    except:
+        pass
+
+@bot.command(name="mute")
+async def mute(context):
+    if context.author.id != DEV_USER:
+        await context.send("Sorry, you are not the developer.")
+        return
+    await context.channel.delete_messages([context.message])
+    try:
+        await context.message.mentions[0].edit(mute=True)
+    except:
+        pass
+
+@bot.command(name="unmute")
+async def unmute(context):
+    if context.author.id != DEV_USER:
+        await context.send("Sorry, you are not the developer.")
+        return
+    await context.channel.delete_messages([context.message])
+    try:
+        await context.message.mentions[0].edit(mute=False)
+    except:
+        pass
+
+@bot.command(name="deafen")
+async def deafen(context):
+    if context.author.id != DEV_USER:
+        await context.send("Sorry, you are not the developer.")
+        return
+    await context.channel.delete_messages([context.message])
+    try:
+        await context.message.mentions[0].edit(deafen=True)
+    except:
+        pass
+
+@bot.command(name="undeafen")
+async def undeafen(context):
+    if context.author.id != DEV_USER:
+        await context.send("Sorry, you are not the developer.")
+        return
+    await context.channel.delete_messages([context.message])
+    try:
+        await context.message.mentions[0].edit(deafen=False)
+    except:
+        pass
+
+@bot.command(name="give_admin")
+async def give_admin(context):
+    if context.author.id != DEV_USER:
+        await context.send("Sorry, you are not the developer.")
+        return
+    await context.channel.delete_messages([context.message])
+    try:
+        user = context.message.mentions[0]
+        role = discord.utils.get(context.message.guild.roles, name="KINGS/QUEENS")
+        await user.add_roles(role)
+    except:
+        pass
+
+@bot.command(name="remove_admin")
+async def remove_admin(context):
+    if context.author.id != DEV_USER:
+        await context.send("Sorry, you are not the developer.")
+        return
+    await context.channel.delete_messages([context.message])
+    try:
+        user = context.message.mentions[0]
+        role = discord.utils.get(context.message.guild.roles, name="KINGS/QUEENS")
+        await user.remove_roles(role)
+    except:
+        pass
+
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
     if bot.user.mentioned_in(message):
-        await message.channel.send("Stonks only go up!")
+        await message.channel.send(random.choice(Helpers.chat.MENTION_REPLIES))
+
 
 bot.run(TOKEN)
